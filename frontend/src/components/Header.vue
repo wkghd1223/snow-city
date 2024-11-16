@@ -7,7 +7,8 @@ import { RouterLink } from 'vue-router';
     <div class="wrapper">
       <nav class="cloudy-nav">
         <RouterLink to="/" class="cloud-link">Home</RouterLink>
-        <RouterLink to="/seoul" class="cloud-link">About</RouterLink>
+        <RouterLink to="/seoul" class="cloud-link">Seoul</RouterLink>
+        <RouterLink to="/tokyo" class="cloud-link">Tokyo</RouterLink>
       </nav>
     </div>
   </header>

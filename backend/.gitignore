@@ -243,3 +243,6 @@ gradle-app.setting
 *.hprof
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,intellij+all,gradle,maven
+
+datasource-local.yml
+environment-local.yml

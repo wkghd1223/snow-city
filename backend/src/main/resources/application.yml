@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: backend
+  profiles:
+    active: local
+    group:
+      local: profiles-local
+        , logging-type-console, logging-level-local
+      dev: profiles-dev
+        , logging-type-file, logging-level-dev
+
+logging:
+  level:
+    root: info
+
+---
+# LOCAL ??
+spring.config.activate.on-profile: "profiles-local"
+spring:
+  config:
+    import:
+      classpath:config/datasource/datasource-local.yml,
+      classpath:config/environment/environment-local.yml
+
+---
+# DEV ??
+spring.config.activate.on-profile: "profiles-dev"
+spring:
+  config:
+    import:
+      classpath:config/datasource/datasource-dev.yml,
+      classpath:config/environment/environment-dev.yml
+

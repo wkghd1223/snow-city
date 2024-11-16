@@ -25,11 +25,17 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'com.corundumstudio.socketio:netty-socketio:2.0.9'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-dynamodb'
+//    implementation 'com.amazonaws:aws-java-sdk-dynamodb'
 }
 
 tasks.named('test') {

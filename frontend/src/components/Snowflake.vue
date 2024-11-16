@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { Client, type IMessage } from '@stomp/stompjs';
+import { socket } from '@/services/socketio.service';
+import { defineProps } from 'vue';
+
+const props = defineProps<{
+  city: string;
+}>();
 
 // Snowflake interface for typed properties
 interface Snowflake {
@@ -17,26 +22,19 @@ interface Snowflake {
 const snowflakes = ref<Snowflake[]>([]);
 let snowflakeId = 0;
 
-// Initialize STOMP client for WebSocket connection
-const client = new Client({
-  brokerURL: 'ws://localhost:8080/ws-message', // WebSocket endpoint for Spring Boot
-  reconnectDelay: 5000,
-  heartbeatIncoming: 4000,
-  heartbeatOutgoing: 4000
+// Listen for "makeItSnow" event from server
+socket.on(props.city, (data: any) => {
+  console.log(data)
+  createSnowflake(); // Trigger snowflake animation when "makeItSnow" is received
 });
 
-// Subscribe to WebSocket messages
-client.onConnect = () => {
-  client.subscribe('/topic/seoul', (message: IMessage) => {
-    if (message.body === 'makeitsnow') {
-      createSnowflake(); // Trigger snowflake on receiving message
-    }
-  });
-};
-
-// Function to send the "make it snow" message to the server
+// Function to send the "make it snow" event to the server
 const sendMessage = () => {
-  client.publish({ destination: '/app/send/seoul', body: 'makeitsnow' });
+  if (socket.connected) {
+  socket.emit("snow", props.city);
+  } else {
+    createSnowflake();
+  }
 };
 
 // Snowflake class definition
@@ -94,18 +92,18 @@ const createSnowflake = (): void => {
 
 // Lifecycle hooks for WebSocket connection management
 onMounted(() => {
-  client.activate();
+  socket.connect();
 });
 
 onUnmounted(() => {
-  client.deactivate();
+  socket.disconnect();
 });
 </script>
 
 <template>
   <div @click="sendMessage">
     <div class="snow-container">
-      <img class="city-view" src="@/assets/css/city-seoul.png" alt="city" />
+      <img class="city-view" :src="`/src/assets/css/city-${city}.png`" alt="city" />
       <div v-for="snowflake in snowflakes" :key="snowflake.id" :style="snowflake.getStyle()" class="snowflake">❄️</div>
     </div>
 
@@ -139,6 +137,7 @@ onUnmounted(() => {
 
 .city-view {
   background-image: url(@/assets/css/city-seoul.png);
+  width: 100%;
   position: absolute;
   pointer-events: none;
   bottom: 0;
