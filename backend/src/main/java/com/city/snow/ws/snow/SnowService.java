@@ -1,27 +1,16 @@
 package com.city.snow.ws.snow;
 
 import com.corundumstudio.socketio.SocketIOServer;
-import io.awspring.cloud.sqs.annotation.SqsListener;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import java.net.InetSocketAddress;
-
-import java.net.SocketAddress;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -46,15 +35,16 @@ public class SnowService {
     server.addDisconnectListener(client -> log.info("Client disconnected: " + client.getSessionId()));
 
     // Listen for the "makeItSnow" event from clients
-    server.addEventListener(RECEIVE_PATH, String.class, (client, city, ackSender) -> {
-      UUID uuid = UUID.randomUUID();
-      log.info("Received 'make it snow' command: " + city);
+    server.addEventListener(RECEIVE_PATH, String.class, (client, _data, ackSender) -> {
+//      UUID uuid = UUID.randomUUID();
+//      log.info("Received 'make it snow' command: " + city);
       InetSocketAddress remoteAddress = (InetSocketAddress) client.getRemoteAddress();
       String clientIp = remoteAddress.getAddress().getHostAddress();
 
-      SnowDto.DynamoRequestDto data = new SnowDto.DynamoRequestDto();
-      data.setCity(city);
-      data.setSnowid(uuid.toString());
+      SnowDto.DynamoRequestDto data = SnowDto.DynamoRequestDto.of(_data);
+//      SnowDto.DynamoRequestDto data = new SnowDto.DynamoRequestDto();
+//      data.setCity(city);
+//      data.setSnowid(uuid.toString());
       data.setIp(clientIp);
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
       dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));

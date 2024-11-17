@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { socket } from '@/services/socketio.service';
 import { defineProps } from 'vue';
+import { v4 as uuid } from 'uuid';
 
 const props = defineProps<{
   city: string;
@@ -21,20 +22,30 @@ interface Snowflake {
 // Reactive references
 const snowflakes = ref<Snowflake[]>([]);
 let snowflakeId = 0;
-
+let queue: string[] = [];
 // Listen for "makeItSnow" event from server
 socket.on(props.city, (data: any) => {
-  console.log(data)
-  createSnowflake(); // Trigger snowflake animation when "makeItSnow" is received
+  const snowid = data as string
+  const idx = queue.findIndex(item => item === snowid)
+  if (idx === -1) {
+    createSnowflake(); // Trigger snowflake animation when "makeItSnow" is received
+  } else {
+    queue.splice(idx, 1);
+  }
 });
 
 // Function to send the "make it snow" event to the server
 const sendMessage = () => {
   if (socket.connected) {
-  socket.emit("snow", props.city);
-  } else {
-    createSnowflake();
+    const snowid = uuid();
+    queue.push(snowid)
+    const body = {
+      city: props.city, 
+      snowid
+    }
+    socket.emit("snow", JSON.stringify(body));
   }
+  createSnowflake();
 };
 
 // Snowflake class definition

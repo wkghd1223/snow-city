@@ -1,13 +1,12 @@
 package com.city.snow.ws.snow;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-
-import java.time.Instant;
-import java.util.Map;
 
 public class SnowDto {
 
@@ -36,14 +35,24 @@ public class SnowDto {
     public String getUtcCreatedAt() {
       return utcCreatedAt;
     }
+    public static DynamoRequestDto of (String data) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      try {
+        DynamoRequestDto dto = objectMapper.readValue(data, DynamoRequestDto.class);
+        return dto;
+      } catch (JsonProcessingException e) {
+        e.getStackTrace();
+        return new DynamoRequestDto();
+      }
+    }
   }
 
   @Setter
   @Getter
   public static class SQSResponseDto {
-    private Map<String, String> snowid;
-    private Map<String, String> city;
-    private Map<String, String> ip;
+    private String snowid;
+    private String city;
+    private String ip;
 
   }
 }
