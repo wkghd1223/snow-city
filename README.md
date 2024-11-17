@@ -19,7 +19,7 @@ The primary goal was to achieve real-time updates with using RDS like AWS Aurora
 
 The application architecture is designed to listen for changes in the database and trigger relevant updates on the frontend. The process flow is as follows:
 
-1. **Data insertion**: Clicking page send data to Spring boot application through Socket.io module.
+1. **Data insertion**: Clicking page send data to backend(Spring boot application) through Socket.io module.
 2. **Database Changes:** Any insertion or modification in DynamoDB triggers AWS Lambda functions.
 3. **Event Stream Processing:** AWS Lambda processes these changes and forwards the required data to AWS SQS.
 4. **Frontend Updates:** The backend listens to the SQS for updates, ensuring that page content reflects the latest database state. Send this message to frontend through Socket.io.
