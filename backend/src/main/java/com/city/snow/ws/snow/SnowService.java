@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.net.InetSocketAddress;
 import java.text.DateFormat;
@@ -36,15 +37,10 @@ public class SnowService {
 
     // Listen for the "makeItSnow" event from clients
     server.addEventListener(RECEIVE_PATH, String.class, (client, _data, ackSender) -> {
-//      UUID uuid = UUID.randomUUID();
-//      log.info("Received 'make it snow' command: " + city);
       InetSocketAddress remoteAddress = (InetSocketAddress) client.getRemoteAddress();
       String clientIp = remoteAddress.getAddress().getHostAddress();
 
       SnowDto.DynamoRequestDto data = SnowDto.DynamoRequestDto.of(_data);
-//      SnowDto.DynamoRequestDto data = new SnowDto.DynamoRequestDto();
-//      data.setCity(city);
-//      data.setSnowid(uuid.toString());
       data.setIp(clientIp);
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
       dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));

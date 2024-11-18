@@ -35,7 +35,6 @@ dependencies {
     implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-dynamodb'
-//    implementation 'com.amazonaws:aws-java-sdk-dynamodb'
 }
 
 tasks.named('test') {

@@ -1,6 +1,6 @@
 package com.city.snow.config;
 
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -25,10 +24,11 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfig {
 
   private static final Integer MAX_PAYLOAD_LENGTH = 10_000;
+  @Value("${urls.frontend.origins}")
+  private String[] origins;
 
   private void sharedSecurityConfiguration(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
@@ -79,7 +79,7 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+    configuration.setAllowedOrigins(List.of(origins));
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(
         List.of("Content-Type", "X-Requested-With", "Authorization", "withCredentials",
@@ -92,13 +92,13 @@ public class SecurityConfig {
   }
 
   /**
-   * 허용할 URL 추가
+   * Add URL that I'm going to permit
    *
-   * @return 허용할 URL
+   * @return Permitted URL
    */
   private RequestMatcher[] permitAllPattern() {
     return new RequestMatcher[]{
-        new AntPathRequestMatcher("/v2/auth/token"),
+//        new AntPathRequestMatcher("/permitted-url"),
         PathRequest.toStaticResources().atCommonLocations()
     };
   }
