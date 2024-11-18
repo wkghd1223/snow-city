@@ -5,7 +5,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.net.InetSocketAddress;
 import java.text.DateFormat;
@@ -13,11 +12,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import static com.city.snow.Constants.DYNAMODB_TIME_TO_LIVE;
+import static com.city.snow.Constants.SOCKET_LISTEN_PATH;
+
 @Slf4j
 @Service
 public class SnowService {
   private final SocketIOServer server;
-  private final String RECEIVE_PATH = "snow";
+
   @Autowired
   private DynamoDbService dynamoDbService;
 
@@ -36,7 +38,7 @@ public class SnowService {
     server.addDisconnectListener(client -> log.info("Client disconnected: " + client.getSessionId()));
 
     // Listen for the "makeItSnow" event from clients
-    server.addEventListener(RECEIVE_PATH, String.class, (client, _data, ackSender) -> {
+    server.addEventListener(SOCKET_LISTEN_PATH, String.class, (client, _data, ackSender) -> {
       InetSocketAddress remoteAddress = (InetSocketAddress) client.getRemoteAddress();
       String clientIp = remoteAddress.getAddress().getHostAddress();
 
@@ -44,7 +46,9 @@ public class SnowService {
       data.setIp(clientIp);
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
       dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-      data.setUtcCreatedAt(dateFormat.format(new Date()));
+      data.setCreatedAt(dateFormat.format(new Date()));
+      data.setTtl((System.currentTimeMillis() / 1000L) + DYNAMODB_TIME_TO_LIVE);
+
       dynamoDbService.saveItem(data);
     });
   }

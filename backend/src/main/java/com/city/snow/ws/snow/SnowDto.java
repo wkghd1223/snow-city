@@ -16,7 +16,8 @@ public class SnowDto {
     private String snowid;
     private String city;
     private String ip;
-    private String utcCreatedAt;
+    private String createdAt;
+    private Long ttl;
 
     @DynamoDbPartitionKey
     @DynamoDbAttribute("snowid")
@@ -29,17 +30,20 @@ public class SnowDto {
     }
     @DynamoDbAttribute("ip")
     public String getIp() {
-      return ip;
+      return this.ip;
     }
     @DynamoDbAttribute("created_at")
-    public String getUtcCreatedAt() {
-      return utcCreatedAt;
+    public String getCreatedAt() {
+      return this.createdAt;
+    }
+    @DynamoDbAttribute("ttl")
+    public Long getTtl() {
+      return this.ttl;
     }
     public static DynamoRequestDto of (String data) {
       ObjectMapper objectMapper = new ObjectMapper();
       try {
-        DynamoRequestDto dto = objectMapper.readValue(data, DynamoRequestDto.class);
-        return dto;
+        return objectMapper.readValue(data, DynamoRequestDto.class);
       } catch (JsonProcessingException e) {
         e.getStackTrace();
         return new DynamoRequestDto();
