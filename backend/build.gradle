@@ -36,7 +36,7 @@ dependencies {
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-sqs'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-dynamodb'
 }
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
+//
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}

@@ -5,9 +5,10 @@ type ClientToServerEvents = any
 class SocketIOService {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
   constructor() {
-    this.socket = io("http://127.0.0.1:8080" );
+    this.socket = io(import.meta.env.VITE_BACKEND_SOCKET_URL);
+    console.log(import.meta.env.VITE_BACKEND_SOCKET_URL)
   }
 }
 
 // create an instance/connection here
-export const socket = new SocketIOService().socket;
+export const socket = new SocketIOService().socket;``

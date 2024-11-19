@@ -109,12 +109,14 @@ onMounted(() => {
 onUnmounted(() => {
   socket.disconnect();
 });
+
 </script>
 
 <template>
   <div @click="sendMessage">
     <div class="snow-container">
-      <img class="city-view" :src="`/src/assets/css/city-${city}.png`" alt="city" />
+      <!-- <img class="city-view" :src="getCityImgUrl(city)" alt="city" /> -->
+      <div :class="`city-view ${city}`"></div>
       <div v-for="snowflake in snowflakes" :key="snowflake.id" :style="snowflake.getStyle()" class="snowflake">❄️</div>
     </div>
 
@@ -147,17 +149,23 @@ onUnmounted(() => {
 }
 
 .city-view {
-  background-image: url(@/assets/css/city-seoul.png);
   width: 100%;
+  height: 100%;
   position: absolute;
-  pointer-events: none;
+  background-position: bottom;
+  background-repeat: no-repeat;
   bottom: 0;
-  user-drag: none;
-  -webkit-user-drag: none;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
+  background-size: 100vw;
+  @media (max-width: 575px) { 
+    background-size: 100vh;
+
+  } 
+  &.seoul {
+    background-image: url(@/assets/city-seoul.png);
+  }
+  &.tokyo {
+    background-image: url(@/assets/city-tokyo.png);
+  }
 }
 
 button {
