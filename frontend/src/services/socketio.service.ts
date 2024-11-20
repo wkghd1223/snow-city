@@ -6,7 +6,6 @@ class SocketIOService {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
   constructor() {
     this.socket = io(import.meta.env.VITE_BACKEND_SOCKET_URL);
-    console.log(import.meta.env.VITE_BACKEND_SOCKET_URL)
   }
 }
 

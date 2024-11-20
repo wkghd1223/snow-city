@@ -39,6 +39,7 @@ import { cities } from '@/constants/city-list';
   display: flex;
   gap: 15px;
   text-shadow: 0px -2px 8px white;
+  min-width: max-content;
 }
 
 /* Cloudy link with cloud shape using border-radius and pseudo-elements */

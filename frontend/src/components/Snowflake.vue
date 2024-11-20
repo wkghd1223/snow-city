@@ -55,8 +55,6 @@ watch(
         queue.value.splice(idx, 1);
       }
     });
-
-    console.log(`Now listening to events for city: ${newCity}`);
   },
   { immediate: true } // Trigger immediately for the initial `city` value
 );
@@ -69,7 +67,6 @@ const sendMessage = () => {
       city: props.city, 
       snowid
     }
-    console.log(body)
     socket.emit("snow", JSON.stringify(body));
   }
   createSnowflake();
@@ -176,7 +173,6 @@ const getBackgroundImage = () => `/city-${props.city}.png`
 }
 
 .city-view {
-  width: 100%;
   height: 100%;
   position: absolute;
   background-position: bottom;
