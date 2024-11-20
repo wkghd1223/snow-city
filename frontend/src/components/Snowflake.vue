@@ -3,6 +3,8 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { socket } from '@/services/socketio.service';
 import { defineProps } from 'vue';
 import { v4 as uuid } from 'uuid';
+import { watch } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
   city: string;
@@ -110,13 +112,13 @@ onUnmounted(() => {
   socket.disconnect();
 });
 
+const getBackgroundImage = () => `/city-${props.city}.png`
 </script>
 
 <template>
   <div @click="sendMessage">
     <div class="snow-container">
-      <!-- <img class="city-view" :src="getCityImgUrl(city)" alt="city" /> -->
-      <div :class="`city-view ${city}`"></div>
+      <img :class="`city-view`" :src="getBackgroundImage()" alt="" />
       <div v-for="snowflake in snowflakes" :key="snowflake.id" :style="snowflake.getStyle()" class="snowflake">❄️</div>
     </div>
 
@@ -155,17 +157,14 @@ onUnmounted(() => {
   background-position: bottom;
   background-repeat: no-repeat;
   bottom: 0;
-  background-size: 100vw;
-  @media (max-width: 575px) { 
-    background-size: 100vh;
+  background-size: cover;
 
-  } 
-  &.seoul {
-    background-image: url(@/assets/city-seoul.png);
-  }
-  &.tokyo {
-    background-image: url(@/assets/city-tokyo.png);
-  }
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 button {
