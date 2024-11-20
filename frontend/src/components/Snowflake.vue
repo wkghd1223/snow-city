@@ -24,27 +24,52 @@ interface Snowflake {
 // Reactive references
 const snowflakes = ref<Snowflake[]>([]);
 let snowflakeId = 0;
-let queue: string[] = [];
+// let queue: string[] = [];
+const queue = ref<string[]>([]);
 // Listen for "makeItSnow" event from server
-socket.on(props.city, (data: any) => {
-  const snowid = data as string
-  const idx = queue.findIndex(item => item === snowid)
-  if (idx === -1) {
-    createSnowflake(); // Trigger snowflake animation when "makeItSnow" is received
-  } else {
-    queue.splice(idx, 1);
-  }
-});
+// socket.on(props.city, (data: any) => {
+//   const snowid = data as string
+//   const idx = queue.findIndex(item => item === snowid)
+//   if (idx === -1) {
+//     createSnowflake(); // Trigger snowflake animation when "makeItSnow" is received
+//   } else {
+//     queue.splice(idx, 1);
+//   }
+// });
+watch(
+  () => props.city,
+  (newCity, oldCity) => {
+    if (oldCity) {
+      // Unsubscribe from the old city's event
+      socket.off(oldCity);
+    }
 
+    // Subscribe to the new city's event
+    socket.on(newCity, (data: any) => {
+      const snowid = data as string;
+      const idx = queue.value.findIndex((item) => item === snowid);
+
+      if (idx === -1) {
+        createSnowflake(); // Trigger snowflake animation
+      } else {
+        queue.value.splice(idx, 1);
+      }
+    });
+
+    console.log(`Now listening to events for city: ${newCity}`);
+  },
+  { immediate: true } // Trigger immediately for the initial `city` value
+);
 // Function to send the "make it snow" event to the server
 const sendMessage = () => {
   if (socket.connected) {
     const snowid = uuid();
-    queue.push(snowid)
+    queue.value.push(snowid)
     const body = {
       city: props.city, 
       snowid
     }
+    console.log(body)
     socket.emit("snow", JSON.stringify(body));
   }
   createSnowflake();
