@@ -173,13 +173,14 @@ const getBackgroundImage = () => `/city-${props.city}.png`
 }
 
 .city-view {
-  height: 100%;
+  width: 100%;
+  height: auto;
   position: absolute;
-  background-position: bottom;
-  background-repeat: no-repeat;
   bottom: 0;
-  background-size: cover;
-
+  @media (max-width: 575px) {
+    height: 100%;
+    width: auto; 
+  }
   user-drag: none;
   -webkit-user-drag: none;
   user-select: none;
