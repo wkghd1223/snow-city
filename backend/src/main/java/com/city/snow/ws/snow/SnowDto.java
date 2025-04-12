@@ -14,7 +14,7 @@ public class SnowDto {
   @DynamoDbBean
   public static class DynamoRequestDto {
     private String snowid;
-    private String city;
+    private String word;
     private String ip;
     private String createdAt;
     private Long ttl;
@@ -24,9 +24,9 @@ public class SnowDto {
     public String getSnowid() {
       return snowid;
     }
-    @DynamoDbAttribute("city")
-    public String getCity() {
-      return city;
+    @DynamoDbAttribute("word")
+    public String getWord() {
+      return word;
     }
     @DynamoDbAttribute("ip")
     public String getIp() {
@@ -55,7 +55,7 @@ public class SnowDto {
   @Getter
   public static class SQSResponseDto {
     private String snowid;
-    private String city;
+    private String word;
     private String ip;
 
   }

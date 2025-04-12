@@ -26,7 +26,7 @@
   <style scoped>
   .app-footer {
     bottom: 0;
-    position: absolute;
+    position: relative;
     width: 100%;
     background-color: #1c1c1c;
     color: #fff;

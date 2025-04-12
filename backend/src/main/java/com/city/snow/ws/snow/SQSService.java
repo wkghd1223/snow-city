@@ -1,5 +1,6 @@
 package com.city.snow.ws.snow;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,8 @@ public class SQSService {
   @SqsListener("${spring.cloud.aws.sqs.queue-name}")
   public void listenQueue(SnowDto.SQSResponseDto dto) {
     try {
-      log.info("LISTEN"+ dto.getSnowid() + " " + dto.getCity());
-      snowService.sendToClient(dto.getCity(), dto.getSnowid());
+      ObjectMapper objectMapper = new ObjectMapper();
+      snowService.sendToClient("snow", objectMapper.writeValueAsString(dto));
     } catch (Exception e) {
       e.getStackTrace();
     }
